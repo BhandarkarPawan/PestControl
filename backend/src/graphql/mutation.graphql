@@ -1,0 +1,10 @@
+# external definitions
+
+type MutationResult {
+  success: Boolean!
+  errors: [String]
+}
+
+type Mutation {
+  addUser(name: String!, email: String!, password: String!): MutationResult!
+}

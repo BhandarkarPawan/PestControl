@@ -1,0 +1,17 @@
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type UserResult {
+  success: Boolean!
+  errors: [String]
+  user: User
+}
+
+type UsersResult {
+  success: Boolean!
+  errors: [String]
+  users: [User]
+}

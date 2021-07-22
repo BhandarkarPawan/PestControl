@@ -1,6 +1,18 @@
+from enum import Enum
+
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
+
+
+class StatusType(Enum):
+    CONSTRAINT_ERROR = "CONSTRAINT_ERROR"
+    SERVER_ERROR = "SERVER_ERROR"
+    DATABASE_ERROR = "DATABASE_ERROR"
+    INPUT_ERROR = "INPUT_ERROR"
+    SUCCESS = "SUCCESS"
+    NOT_FOUND = "NOT_FOUND"
+
 
 # ---------- Database Entities ---------- #
 Base = declarative_base()
@@ -10,16 +22,15 @@ class Project(Base):
     __tablename__ = "project"
 
     # columns
-    id = Column(String(64), primary_key=True)
+    id = Column(Integer, primary_key=True)
     title: Column = Column(String(64), nullable=False)
     description: Column = Column(String(16))
 
-    def __init__(self, id: str, title: str, description: str):
-        self.id = id
+    def __init__(self, title: str, description: str) -> None:
         self.title = title
         self.description = description
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Project(title='{self.title}', description='{self.description}')>"
 
 
@@ -27,18 +38,17 @@ class User(Base):
     __tablename__ = "user"
 
     # columns
-    id = Column(String(64), primary_key=True)
+    id = Column(Integer, primary_key=True)
     name: Column = Column(String(64), nullable=False)
-    email: Column = Column(String(64), nullable=False)
+    email: Column = Column(String(64), nullable=False, unique=True)
     password: Column = Column(String(64), nullable=False)
 
-    def __init__(self, id: str, name: str, email: str, password: str):
-        self.id = id
+    def __init__(self, name: str, email: str, password: str) -> None:
         self.name = name
         self.email = email
         self.password = password
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<User(name='{self.name}', email='{self.email}')>"
 
 
@@ -46,12 +56,12 @@ class Issue(Base):
     __tablename__ = "issue"
 
     # columns
-    id = Column(String(64), primary_key=True)
-    project_id: Column = Column(String(64), ForeignKey("project.id"))
+    id = Column(Integer, primary_key=True)
+    project_id: Column = Column(String(64), ForeignKey("project.id"), nullable=False)
     title: Column = Column(String(64), nullable=False)
     description: Column = Column(String(16))
     assigned_to: Column = Column(String(64), ForeignKey("user.id"))
-    due_date: Column = Column(Integer, nullable=False)
+    due_date: Column = Column(Integer)
     severity: Column = Column(String(64))
     flag: Column = Column(String(16))
     tags: Column = Column(String(128))
@@ -64,19 +74,17 @@ class Issue(Base):
 
     def __init__(
         self,
-        id: str,
         title: str,
-        description: str,
         project_id: str,
-        assigned_to: str,
-        due_date: int,
-        severity: str,
-        flag: str,
-        tags: str,
-        classification: str,
-        reproducible: str,
+        description: str = None,
+        assigned_to: str = None,
+        due_date: int = None,
+        severity: str = None,
+        flag: str = None,
+        tags: str = None,
+        classification: str = None,
+        reproducible: str = None,
     ):
-        self.id = id
         self.title = title
         self.description = description
         self.project_id = project_id
@@ -88,12 +96,13 @@ class Issue(Base):
         self.classification = classification
         self.reproducible = reproducible
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Issue(title='{self.title}', assigned_to='{self.assigned_to}'"
 
 
 class Following(Base):
     __tablename__ = "following"
+    id = Column(Integer, primary_key=True)
     user_id = Column(String(64), ForeignKey("user.id"))
     issue_id = Column(String(64), ForeignKey("issue.id"))
 
@@ -101,16 +110,17 @@ class Following(Base):
     user: User = relationship("User")
     issue: Issue = relationship("Issue")
 
-    def __init__(self, user_id: str, issue_id: str):
+    def __init__(self, user_id: str, issue_id: str) -> None:
         self.user_id = user_id
         self.issue_id = issue_id
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Following(user_id='{self.user_id}', issue_id='{self.issue_id}')>"
 
 
 class Membership(Base):
     __tablename__ = "membership"
+    id = Column(Integer, primary_key=True)
     user_id = Column(String(64), ForeignKey("user.id"))
     project_id = Column(String(64), ForeignKey("project.id"))
 
@@ -118,9 +128,10 @@ class Membership(Base):
     user: User = relationship("User")
     project: Project = relationship("Project")
 
-    def __init__(self, user_id: str, project_id: str):
+    def __init__(self, user_id: str, project_id: str) -> None:
         self.user_id = user_id
         self.project_id = project_id
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Membership(user_id='{self.user_id}', project_id='{self.project_id}')>"
+

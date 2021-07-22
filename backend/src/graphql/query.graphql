@@ -1,0 +1,6 @@
+# external definitions
+# user.graphql: [UserResult, UsersResult]
+
+type Query {
+  getUser(email: String!): UserResult
+}
