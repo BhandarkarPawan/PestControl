@@ -58,6 +58,8 @@ class Issue(Base):
 
     # columns
     id = Column(Integer, primary_key=True)
+
+    # columns
     project_id: Column = Column(String(64), ForeignKey("project.id"), nullable=False)
     title: Column = Column(String(64), nullable=False)
     description: Column = Column(String(16))
@@ -105,6 +107,8 @@ class Issue(Base):
 
 class Following(Base):
     __tablename__ = "following"
+
+    # columns
     id = Column(Integer, primary_key=True)
     user_id = Column(String(64), ForeignKey("user.id"))
     issue_id = Column(String(64), ForeignKey("issue.id"))
@@ -123,6 +127,8 @@ class Following(Base):
 
 class Membership(Base):
     __tablename__ = "membership"
+
+    # columns
     id = Column(Integer, primary_key=True)
     user_id = Column(String(64), ForeignKey("user.id"))
     project_id = Column(String(64), ForeignKey("project.id"))
@@ -137,4 +143,3 @@ class Membership(Base):
 
     def __repr__(self) -> str:
         return f"<Membership(user_id='{self.user_id}', project_id='{self.project_id}')>"
-
