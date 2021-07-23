@@ -17,10 +17,10 @@ class UserApi:
         self._init_mutations()
 
     def _init_mutations(self) -> None:
-        self.query.set_field("addUser", self.add_user)
+        self.mutation.set_field("addUser", self.add_user)
 
     def _init_queries(self) -> None:
-        self.mutation.set_field("getUser", self.get_user)
+        self.query.set_field("getUser", self.get_user)
 
     # mutation methods
     def add_user(self) -> Optional[User]:

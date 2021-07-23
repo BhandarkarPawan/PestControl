@@ -1,4 +1,5 @@
 from enum import Enum
+from time import time
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -61,6 +62,7 @@ class Issue(Base):
     title: Column = Column(String(64), nullable=False)
     description: Column = Column(String(16))
     assigned_to: Column = Column(String(64), ForeignKey("user.id"))
+    reported_date: Column = Column(Integer)
     due_date: Column = Column(Integer)
     severity: Column = Column(String(64))
     flag: Column = Column(String(16))
@@ -89,6 +91,7 @@ class Issue(Base):
         self.description = description
         self.project_id = project_id
         self.assigned_to = assigned_to
+        self.reported_date = int(time.time())
         self.due_date = due_date
         self.severity = severity
         self.flag = flag
