@@ -3,4 +3,6 @@
 
 type Query {
   getUser(email: String!): UserResult
+  getProject(id: Int!): ProjectResult
+  getIssue(id: Int!): IssueResult
 }
