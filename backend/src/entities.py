@@ -64,7 +64,7 @@ class Issue(Base):
     title: Column = Column(String(64), nullable=False)
     description: Column = Column(String(16))
     assigned_to: Column = Column(String(64), ForeignKey("user.id"))
-    reported_date: Column = Column(Integer)
+    reported_date: Column = Column(Integer, nullable=False)
     due_date: Column = Column(Integer)
     severity: Column = Column(String(64))
     flag: Column = Column(String(16))

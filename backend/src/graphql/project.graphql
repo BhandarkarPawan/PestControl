@@ -7,11 +7,11 @@ type Project {
 type ProjectsResult {
   success: Boolean!
   errors: [String]
-  projects: [Project]
+  info: [Project]
 }
 
 type ProjectResult {
   success: Boolean!
   errors: [String]
-  project: Project
+  info: Project
 }

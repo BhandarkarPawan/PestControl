@@ -4,7 +4,7 @@ type Issue {
   title: String!
   description: String
   assigned_to: String
-  reported_date: Int
+  reported_date: Int!
   due_date: String
   severity: String
   flag: String
@@ -18,11 +18,11 @@ type Issue {
 type IssueResult {
   success: Boolean!
   errors: [String]
-  issue: Issue
+  info: Issue
 }
 
 type IssuesResult {
   success: Boolean!
   errors: [String]
-  issues: [Issue]
+  info: [Issue]
 }

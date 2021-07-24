@@ -7,11 +7,11 @@ type User {
 type UserResult {
   success: Boolean!
   errors: [String]
-  user: User
+  info: User
 }
 
 type UsersResult {
   success: Boolean!
   errors: [String]
-  users: [User]
+  info: [User]
 }
