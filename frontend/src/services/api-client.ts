@@ -29,11 +29,6 @@ export class IApiClient implements IGraphQLClient {
     return { success: false, errors: ['Method not implemented.'] };
   }
   getUser(email: string) {
-    const { loading, response } = useGraphQL<IUser, IGetUserVars>(
-      query.GET_USER,
-      MUser,
-      { email }
-    );
     return { success: false, errors: ['Method not implemented.'], info: null };
   }
 
