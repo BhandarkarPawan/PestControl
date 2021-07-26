@@ -23,14 +23,14 @@ class UserController(Controller):
     def find_user(self, email: str) -> Tuple[StatusType, Optional[User]]:
         user = self._session.query(User).filter_by(email=email).first()
         status_type = StatusType.SUCCESS if user else StatusType.NOT_FOUND
-        logger.debug(f"Got project from the DB: {user}")
+        logger.debug(f"Got user from the DB: {user}")
         return status_type, user
 
     @db_error_check
     def list_users(self) -> Tuple[StatusType, List[User]]:
         users = self._session.query(User).all()
         status_type = StatusType.SUCCESS if len(users) > 0 else StatusType.NOT_FOUND
-        logger.debug(f"Got projects from the DB: {users}")
+        logger.debug(f"Got users from the DB: {len(users)}")
         return status_type, users
 
     @db_error_check

@@ -3,6 +3,7 @@
 
 type Query {
   getUser(email: String!): UserResult
+  getUsers: UsersResult
   getProject(id: Int!): ProjectResult
   getIssue(id: Int!): IssueResult
 }

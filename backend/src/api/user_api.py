@@ -1,13 +1,14 @@
-from typing import Optional
+from typing import Optional, Dict
 
 from ariadne import ObjectType
 from logzero import logger
 
 from backend.src.controller.user_controller import UserController
 from backend.src.entities import User
+from backend.src.api.api import API
 
 
-class UserApi:
+class UserApi(API):
     def __init__(self, user_controller: UserController) -> None:
         self.controller = user_controller
         self.query = ObjectType("Query")
@@ -21,6 +22,7 @@ class UserApi:
 
     def _init_queries(self) -> None:
         self.query.set_field("getUser", self.get_user)
+        self.query.set_field("getUsers", self.get_users)
 
     # mutation methods
     def add_user(self) -> Optional[User]:
@@ -28,6 +30,12 @@ class UserApi:
         raise NotImplementedError("You need to implement this!")
 
     # query methods
-    def get_user(self) -> Optional[User]:
+    def get_user(self, *args, **kwargs) -> Dict:
         logger.info("GUI calls for getUser query")
-        raise NotImplementedError("You need to implement this!")
+        success, user = self.controller.find_user(**kwargs)
+        return {"success": True, "errors": [], "info": user}
+
+    def get_users(self, *args, **kwargs) -> Dict:
+        logger.info("GUI calls for getUsers query")
+        success, users = self.controller.list_users(**kwargs)
+        return {"success": True, "errors": [], "info": users}
