@@ -1,13 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import Routes from './routes';
+
+const graphQLUri = 'http://192.168.29.170:5000/graphql';
+
+const apolloClient = new ApolloClient({
+  uri: graphQLUri,
+  credentials: 'same-origin',
+  cache: new InMemoryCache(),
+});
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <ApolloProvider client={apolloClient}>
+    <Routes />
+  </ApolloProvider>,
   document.getElementById('root')
 );
 
