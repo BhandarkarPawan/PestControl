@@ -7,12 +7,12 @@ from sqlalchemy.orm import relationship
 
 
 class StatusType(Enum):
-    CONSTRAINT_ERROR = "CONSTRAINT_ERROR"
-    SERVER_ERROR = "SERVER_ERROR"
-    DATABASE_ERROR = "DATABASE_ERROR"
-    INPUT_ERROR = "INPUT_ERROR"
-    SUCCESS = "SUCCESS"
-    NOT_FOUND = "NOT_FOUND"
+    CONSTRAINT_ERROR = "The input data violates some DB constraints"
+    SERVER_ERROR = "There was an server error in processing your request"
+    DATABASE_ERROR = "The database encountered an error in processing your request"
+    INPUT_ERROR = "The input data is invalid"
+    SUCCESS = "Operation executed successfully"
+    NOT_FOUND = "The data you requested cannot be found"
 
 
 # ---------- Database Entities ---------- #
