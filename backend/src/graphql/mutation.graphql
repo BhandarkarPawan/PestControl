@@ -6,6 +6,7 @@ type MutationResult {
 }
 
 type Mutation {
+  # user mutations
   addUser(name: String!, email: String!, password: String!): MutationResult!
   updateUser(
     id: String!
@@ -15,6 +16,7 @@ type Mutation {
   ): MutationResult!
   deleteUser(id: String!): MutationResult!
 
+  # project mutations
   addProject(title: String!, description: String): MutationResult!
   updateProject(
     id: String!
@@ -23,6 +25,7 @@ type Mutation {
   ): MutationResult!
   deleteProject(id: String!): MutationResult!
 
+  # issue mutations
   addIssue(
     project_id: String!
     title: String!

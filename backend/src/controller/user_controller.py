@@ -1,6 +1,7 @@
 from typing import List, Optional, Tuple
 
 from logzero import logger
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from backend.src.controller.controller import Controller, db_error_check
 from backend.src.entities import StatusType, User
@@ -11,12 +12,25 @@ from backend.src.entities import StatusType, User
 class UserController(Controller):
     """Controller class for user entity."""
 
+    # api
+    @db_error_check
+    def authenticate_user(
+        self, email: str, password: str
+    ) -> Tuple[StatusType, Optional[User]]:
+        user = self._session.query(User).filter_by(email=email).first()
+        if user is None:
+            return StatusType.NOT_FOUND, None
+        if not check_password_hash(password, user.password):
+            return StatusType.INPUT_ERROR, None
+        return StatusType.SUCCESS, user
+
     # mutations
     @db_error_check
     def create_user(
         self, name: str, email: str, password: str
     ) -> Tuple[StatusType, User]:
-        user = User(name, email, password)
+        hashed_password = generate_password_hash(password)
+        user = User(name, email, hashed_password)
         self._session.add(user)
         self._session.commit()
         logger.debug(f"Added to the DB: {user}")

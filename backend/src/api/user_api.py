@@ -19,7 +19,7 @@ class UserApi(API):
     def _init_mutations(self) -> None:
         self.mutation.set_field("addUser", self.add_user)
         self.mutation.set_field("updateUser", self.update_user)
-        self.mutation.set_field("removeUser", self.delete_user)
+        self.mutation.set_field("deleteUser", self.delete_user)
 
     def _init_queries(self) -> None:
         self.query.set_field("getUser", self.get_user)

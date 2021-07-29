@@ -14,8 +14,13 @@ from flask_cors.decorator import cross_origin
 from flask_jwt_extended import JWTManager
 from logzero import logger
 
+from backend.src.api.auth_api import AuthApi
+from backend.src.api.issue_api import IssueApi
 from backend.src.api.jwt_blacklister import JWTBlacklister
+from backend.src.api.project_api import ProjectApi
 from backend.src.api.user_api import UserApi
+from backend.src.controller.issue_controller import IssueController
+from backend.src.controller.project_controller import ProjectController
 from backend.src.controller.user_controller import UserController
 
 ApiResponse = Tuple[Union[Dict, Response, str], int]
@@ -35,14 +40,14 @@ class GuiApi:
         self._prefix = "/api/"
         self._app.config["JWT_SECRET_KEY"] = self._secret
         self.jwt_blacklister = JWTBlacklister()
+        self.cors_params = {
+            "origin": self._cors_allowed_origins,
+            "headers": ["Content- Type", "Authorization"],
+        }
         JWTManager(self._app)
 
     def _init_gui_apis(self) -> None:
         # jwt_blacklister = JWTBlacklister()
-        cors_params = {
-            "origin": self._cors_allowed_origins,
-            "headers": ["Content- Type", "Authorization"],
-        }
 
         current_file_path = os.path.dirname(os.path.realpath(__file__))
         graphql_schema_path = os.path.join(current_file_path, "..", "graphql/")
@@ -56,14 +61,14 @@ class GuiApi:
         )
 
         @self._app.route("/graphql", methods=["GET"])
-        @cross_origin(**cors_params)
+        @cross_origin(**self.cors_params)
         def graphql_playground() -> ApiResponse:
             logger.debug("GUI Calls for GET /graphql")
             return PLAYGROUND_HTML, 200
 
         @self._app.route("/graphql", methods=["POST"])
         # @verify_jwt(jwt_blacklister)
-        @cross_origin(**cors_params)
+        @cross_origin(**self.cors_params)
         def graphql_server() -> ApiResponse:
             logger.debug("GUI Calls for POST /graphql")
             data = request.get_json()
@@ -91,8 +96,20 @@ class GuiApi:
         print(self._app.url_map)
         self._app.run(host=self._host, port=self._port)
 
-    # todo: Add other APIs
-    def inject(self, user_controller: UserController, **kwargs) -> None:
+    def inject(
+        self,
+        user_controller: UserController,
+        project_controller: ProjectController,
+        issue_controller: IssueController,
+        **kwargs
+    ) -> None:
+        self.auth_api = AuthApi(
+            self._app, self.jwt_blacklister, self.cors_params, user_controller
+        )
+
         self.user_api = UserApi(user_controller)
+        self.project_api = ProjectApi(project_controller)
+        self.issue_api = IssueApi(issue_controller)
+
         self._init_gui_apis()
         self._init_gui_paths()
