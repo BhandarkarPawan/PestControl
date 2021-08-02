@@ -32,6 +32,9 @@ class AuthApi(API):
     def _init_queries(self) -> None:
         pass
 
+    def _init_objects(self) -> None:
+        pass
+
     # authentication methods
     def _init_api(self) -> None:
         @self.app.route("/auth", methods=["POST"])

@@ -1,20 +1,41 @@
+# object
 type Issue {
   id: ID!
-  project_id: String!
+  projectId: ID!
   title: String!
+  reportedDate: String!
   description: String
-  assigned_to: String
-  reported_date: Int!
-  due_date: String
+  reportedBy: String
+  assignedTo: String
+  dueDate: String
   severity: String
   flag: String
   tags: [String]
   classification: String
   reproducible: String
   project: Project
-  assigned_user: User
+  assignedUser: User
 }
 
+# inputs
+input IssueBaseInput {
+  description: String
+  assignedTo: String
+  dueDate: String
+  severity: String
+  flag: String
+  tags: [String]
+  classification: String
+  reproducible: String
+}
+
+input IssueAddInput {
+  projectId: ID!
+  title: String!
+  description: String
+}
+
+# results
 type IssueResult {
   success: Boolean!
   errors: [String]

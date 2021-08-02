@@ -57,6 +57,13 @@ class GuiApi:
             type_defs,
             self.user_api.query,
             self.user_api.mutation,
+            self.user_api.object,
+            self.issue_api.query,
+            self.issue_api.mutation,
+            self.issue_api.object,
+            self.project_api.query,
+            self.project_api.mutation,
+            self.project_api.object,
             snake_case_fallback_resolvers,
         )
 

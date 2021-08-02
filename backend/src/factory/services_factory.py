@@ -8,6 +8,7 @@ from backend.src.controller.issue_controller import IssueController
 from backend.src.controller.project_controller import ProjectController
 from backend.src.controller.user_controller import UserController
 from backend.src.factory.db_accessor_factory import create_db_accessor
+from backend.src.factory.image_accessor_factory import create_image_accessor
 from backend.src.logger import setup_global_logger
 
 
@@ -27,6 +28,7 @@ class ServicesFactory:
 
         api_config = config.api_config
         db_config = config.db_config
+        image_config = config.image_config
         logger_config = config.logger_config
 
         setup_global_logger(file_path=logger_config.file_path)
@@ -44,6 +46,7 @@ class ServicesFactory:
             "issue_controller": IssueController(),
             # ----Factory Methods ----#
             "db_accessor": create_db_accessor(db_config),
+            "image_accessor": create_image_accessor(image_config),
         }
 
         for _, service in services.items():

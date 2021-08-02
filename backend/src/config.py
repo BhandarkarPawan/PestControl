@@ -46,7 +46,37 @@ class DBType(Enum):
     MYSQL = "MYSQL"
 
 
+class ImageStoreType(Enum):
+    S3 = "S3"
+    LOCAL = "LOCAL"
+
+
 # -------------- Config Types --------------#
+
+
+class ImageAccessorConfig:
+    store_type: ImageStoreType
+    folder_path: str
+    s3_public_key: str
+    s3_secret_key: str
+    s3_bucket: str
+    s3_region: str
+
+    def __init__(
+        self,
+        store_type: ImageStoreType,
+        folder_path: str,
+        s3_public_key: str,
+        s3_secret_key: str,
+        s3_bucket: str,
+        s3_region: str,
+    ) -> None:
+        self.store_type = store_type
+        self.folder_path = folder_path
+        self.s3_public_key = s3_public_key
+        self.s3_secret_key = s3_secret_key
+        self.s3_bucket = s3_bucket
+        self.s3_region = s3_region
 
 
 class APIConfig:
@@ -107,6 +137,7 @@ class Config:
     api_config: APIConfig
     logger_config: LoggerConfig
     db_config: DBAccessorConfig
+    image_config: ImageAccessorConfig
 
     def __init__(self) -> None:
         config = ConfigParser(inline_comment_prefixes=";")
@@ -141,3 +172,18 @@ class Config:
             address=ensure_value(db_config, "address", "", str),
             database=ensure_value(db_config, "database", "", str),
         )
+
+        image_config = ensure_config(config, "image")
+        self.image_config = ImageAccessorConfig(
+            store_type=ensure_value(
+                image_config, "type", ImageStoreType.LOCAL, ImageStoreType
+            ),
+            folder_path=ensure_value(
+                image_config, "folder_path", "resources/images", get_absolute_path
+            ),
+            s3_public_key=ensure_value(image_config, "s3_public_key", "", str),
+            s3_secret_key=ensure_value(image_config, "s3_secret_key", "", str),
+            s3_bucket=ensure_value(image_config, "s3_bucket", "", str),
+            s3_region=ensure_value(image_config, "s3_region", "", str),
+        )
+

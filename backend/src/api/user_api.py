@@ -1,6 +1,6 @@
 from typing import Dict
 
-from ariadne import ObjectType
+from ariadne import QueryType, MutationType, ObjectType
 from logzero import logger
 
 from backend.src.controller.user_controller import UserController
@@ -10,11 +10,13 @@ from backend.src.api.api import API
 class UserApi(API):
     def __init__(self, user_controller: UserController) -> None:
         self.controller = user_controller
-        self.query = ObjectType("Query")
-        self.mutation = ObjectType("Mutation")
+        self.query = QueryType()
+        self.mutation = MutationType()
+        self.object = ObjectType("User")
 
         self._init_queries()
         self._init_mutations()
+        self._init_objects()
 
     def _init_mutations(self) -> None:
         self.mutation.set_field("addUser", self.add_user)
@@ -24,6 +26,9 @@ class UserApi(API):
     def _init_queries(self) -> None:
         self.query.set_field("getUser", self.get_user)
         self.query.set_field("searchUsers", self.search_users)
+
+    def _init_objects(self) -> None:
+        pass
 
     # mutation methods
     def add_user(self, *_, **kwargs) -> Dict:

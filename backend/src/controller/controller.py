@@ -4,12 +4,13 @@ import traceback
 from typing import List, Tuple
 
 from logzero import logger
-from sqlalchemy.engine import Connection, Engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError, ProgrammingError, SQLAlchemyError
-from sqlalchemy.orm import Session, scoped_session, sessionmaker
+from sqlalchemy.orm import Session
 
 from backend.src.db_accessor.db_accessor import DbAccessor
 from backend.src.entities import Base, StatusType
+from backend.src.image_accessor.image_accessor import ImageAccessor
 
 
 def db_error_check(f):
@@ -40,12 +41,15 @@ def db_error_check(f):
 
 
 class Controller(ABC):
-    def inject(self, db_accessor: DbAccessor, **kwargs) -> None:
+    def inject(
+        self, db_accessor: DbAccessor, image_accessor: ImageAccessor, **kwargs
+    ) -> None:
+
+        self.db_accessor = db_accessor
+        self.image_accessor = image_accessor
+
         self._engine: Engine = db_accessor.get_engine()
-        self._connection: Connection = db_accessor.get_connection()
-        self._session: Session = scoped_session(
-            sessionmaker(autocommit=False, autoflush=True, bind=self._engine)
-        )
+        self._session: Session = db_accessor.get_session()
 
         # Create tables if they do not exist
         Base.metadata.create_all(self._engine)

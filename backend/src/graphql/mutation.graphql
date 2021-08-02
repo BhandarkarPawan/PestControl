@@ -1,55 +1,17 @@
 # external definitions
-
-type MutationResult {
-  success: Boolean!
-  errors: [String]
-}
-
 type Mutation {
   # user mutations
-  addUser(name: String!, email: String!, password: String!): MutationResult!
-  updateUser(
-    id: String!
-    name: String
-    email: String
-    password: String
-  ): MutationResult!
-  deleteUser(id: String!): MutationResult!
+  addUser(input: UserAddInput!): UserResult!
+  updateUser(id: ID!, input: UserUpdateInput!): UserResult!
+  deleteUser(id: ID!): UserResult!
 
   # project mutations
-  addProject(title: String!, description: String): MutationResult!
-  updateProject(
-    id: String!
-    title: String
-    description: String
-  ): MutationResult!
-  deleteProject(id: String!): MutationResult!
+  addProject(input: ProjectAddInput!): ProjectResult!
+  updateProject(id: ID!, input: ProjectUpdateInput!): ProjectResult!
+  deleteProject(id: ID!): ProjectResult!
 
   # issue mutations
-  addIssue(
-    project_id: String!
-    title: String!
-    description: String
-    assigned_to: String
-    due_date: String
-    severity: String
-    flag: String
-    tags: [String]
-    classification: String
-    reproducible: String
-  ): MutationResult!
-  updateIssue(
-    id: String!
-    project_id: String!
-    title: String
-    description: String
-    assigned_to: String
-    due_date: String
-    severity: String
-    flag: String
-    tags: [String]
-    classification: String
-    reproducible: String
-  ): MutationResult!
-  deleteIssue(id: String!): MutationResult!
+  addIssue(input: IssueAddInput!): IssueResult!
+  updateIssue(id: ID!, input: IssueUpdateInput!): IssueResult!
+  deleteIssue(id: ID!): IssueResult!
 }

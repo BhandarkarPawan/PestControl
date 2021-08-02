@@ -1,9 +1,29 @@
+# object
 type User {
   id: ID!
   name: String!
   email: String!
 }
 
+#inputs
+input UserAddInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input UserUpdateInput {
+  name: String
+  email: String
+  password: String
+}
+
+input UserSearchInput {
+  name: String
+  email: String
+}
+
+# results
 type UserResult {
   success: Boolean!
   errors: [String]

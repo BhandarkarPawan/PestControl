@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 
-from sqlalchemy.engine import Connection, Engine
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session
 
 
 class DbAccessor(ABC):
     @abstractmethod
-    def get_connection(self) -> Connection:
+    def get_session(self) -> Session:
         raise NotImplementedError("You should implement this!")
 
     @abstractmethod

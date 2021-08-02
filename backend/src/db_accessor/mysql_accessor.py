@@ -1,31 +1,58 @@
+import os
+from typing import Optional
+
+from logzero import logger
 from sqlalchemy import create_engine
-from sqlalchemy.engine import Connection, Engine
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session, scoped_session, sessionmaker
+from sqlalchemy.pool import StaticPool
 
-from backend.src.db_accessor.db_accessor import DbAccessor
+from api.src.db_accessor.db_accessor import DbAccessor
 
 
-class MySQLAccessor(DbAccessor):
-    def __init__(
-        self, user: str, password: str, address: str, database: str, echo: bool
-    ) -> None:
-        engine = self._create_connection_engine(user, password, address, database, echo)
-        self._connection = engine.connect()
-        self._engine = engine
+DEFAULT_DB_FILE_NAME = "agrid_ats.sqlite"
+
+
+class SQLiteAccessor(DbAccessor):
+    def __init__(self, db_path: str, echo: bool) -> None:
+        self._engine = self._create_connection_engine(db_path, echo)
+        self._connection = self._engine.connect()
+        self._session: Session = scoped_session(
+            sessionmaker(autocommit=False, autoflush=True, bind=self._engine)
+        )
 
     def inject(self, **kwargs) -> None:
         pass
 
-    def get_connection(self) -> Connection:
-        return self._connection
+    def get_session(self) -> Session:
+        return self._session
 
     def get_engine(self) -> Engine:
         return self._engine
 
-    def _create_connection_engine(
-        self, user: str, password: str, address: str, database: str, echo: bool
-    ) -> Engine:
-        connection_string = "mysql://{0}:{1}@{2}/{3}".format(
-            user, password, address, database
+    def close(self) -> None:
+        self._connection.close()
+
+    def _create_connection_engine(self, db_path: Optional[str], echo: bool) -> Engine:
+        connection_string = "sqlite://"
+        if db_path == ":memory:":
+            db_path = None
+        if db_path is not None:
+            if not db_path.endswith(".sqlite"):
+                db_path = os.path.join(db_path, DEFAULT_DB_FILE_NAME)
+            logger.info("Use NOSQL file at %s", db_path)
+            db_folder_path = os.path.dirname(db_path)
+            if db_folder_path:
+                os.makedirs(db_folder_path, exist_ok=True)
+            connection_string = connection_string + "/" + db_path
+        else:
+            logger.info("Use in memory SQLite DB")
+        # https://stackoverflow.com/questions/33055039/using-sqlalchemy-scoped-session-in-theading-thread
+        # Need check_same_thread': False and poolclass=StaticPool for it to work with sessions
+        engine = create_engine(
+            connection_string,
+            connect_args={"check_same_thread": False},
+            echo=echo,
+            poolclass=StaticPool,
         )
-        engine = create_engine(connection_string, echo=echo)
         return engine

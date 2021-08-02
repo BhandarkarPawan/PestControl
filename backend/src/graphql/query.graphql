@@ -2,24 +2,12 @@
 # user.graphql: [UserResult, UsersResult]
 
 type Query {
-  getUser(email: String!): UserResult
-  searchUsers(name: String): UsersResult
+  getUser(id: ID!): UserResult
+  searchUsers(input: UserAddInput): UsersResult
 
-  getProject(id: Int!): ProjectResult
-  searchProjects(title: String): ProjectsResult
+  getProject(id: ID!): ProjectResult
+  searchProjects(input: ProjectAddInput): ProjectsResult
 
-  getIssue(id: Int!): IssueResult
-  searchIssues(
-    project_id: String
-    title: String
-    description: String
-    assigned_to: String
-    reported_date: Int
-    due_date: String
-    severity: String
-    flag: String
-    tags: [String]
-    classification: String
-    reproducible: String
-  ): IssuesResult
+  getIssue(id: ID!): IssueResult
+  searchIssues(input: IssueSearchInput): IssuesResult
 }

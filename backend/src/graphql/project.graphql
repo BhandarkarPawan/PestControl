@@ -1,9 +1,26 @@
+# objects
 type Project {
   id: ID!
   title: String!
   description: String
 }
 
+# inputs
+input ProjectAddInput {
+  title: String!
+  description: String
+}
+
+input ProjectSearchInput {
+  title: String!
+}
+
+input ProjectUpdateInput {
+  title: String
+  description: String
+}
+
+# results
 type ProjectsResult {
   success: Boolean!
   errors: [String]

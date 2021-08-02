@@ -7,3 +7,7 @@ Flask-JWT-Extended==4.2.3
 pytest==6.2.4
 pytest-cov==2.12.1
 pytest-csv==3.0.0
+numpy==1.21.1
+opencv-python==4.5.3.56
+boto3==1.18.11
+botocore==1.21.11

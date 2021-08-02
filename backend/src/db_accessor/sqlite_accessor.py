@@ -3,10 +3,9 @@ from typing import Optional
 
 from logzero import logger
 from sqlalchemy import create_engine
-from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.pool import StaticPool
-
-from backend.src.db_accessor.db_accessor import DbAccessor
+from sqlalchemy.engine import Engine, Connection
+from api.src.db_accessor.db_accessor import DbAccessor
 
 
 DEFAULT_DB_FILE_NAME = "agrid_ats.sqlite"
@@ -42,6 +41,8 @@ class SQLiteAccessor(DbAccessor):
             connection_string = connection_string + "/" + db_path
         else:
             logger.info("Use in memory SQLite DB")
+        # https://stackoverflow.com/questions/33055039/using-sqlalchemy-scoped-session-in-theading-thread
+        # Need check_same_thread': False and poolclass=StaticPool for it to work with sessions
         engine = create_engine(
             connection_string,
             connect_args={"check_same_thread": False},

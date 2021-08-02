@@ -1,6 +1,6 @@
 from typing import Dict
 
-from ariadne import ObjectType
+from ariadne import QueryType, MutationType, ObjectType
 from logzero import logger
 
 from backend.src.api.api import API
@@ -10,11 +10,13 @@ from backend.src.controller.project_controller import ProjectController
 class ProjectApi(API):
     def __init__(self, project_controller: ProjectController) -> None:
         self.controller = project_controller
-        self.query = ObjectType("Query")
-        self.mutation = ObjectType("Mutation")
+        self.query = QueryType()
+        self.mutation = MutationType()
+        self.object = ObjectType("Project")
 
         self._init_queries()
         self._init_mutations()
+        self._init_objects()
 
     def _init_mutations(self) -> None:
         self.mutation.set_field("addProject", self.add_project)
@@ -24,6 +26,9 @@ class ProjectApi(API):
     def _init_queries(self) -> None:
         self.query.set_field("getProject", self.get_project)
         self.query.set_field("searchProjects", self.search_projects)
+
+    def _init_objects(self) -> None:
+        pass
 
     # mutation methods
     def add_project(self, *_, **kwargs) -> Dict:

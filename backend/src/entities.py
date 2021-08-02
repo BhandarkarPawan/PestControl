@@ -1,9 +1,12 @@
 from enum import Enum
 from time import time
+from typing import Any, Tuple, Union
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+
+import numpy as np
 
 
 class StatusType(Enum):
@@ -14,6 +17,9 @@ class StatusType(Enum):
     SUCCESS = "Operation executed successfully"
     NOT_FOUND = "The data you requested cannot be found"
 
+
+ImageFrame = np.ndarray
+BasicResponse = Tuple[StatusType, Union[str, Any]]
 
 # ---------- Database Entities ---------- #
 Base = declarative_base()
@@ -63,6 +69,7 @@ class Issue(Base):
     project_id: Column = Column(String(64), ForeignKey("project.id"), nullable=False)
     title: Column = Column(String(64), nullable=False)
     description: Column = Column(String(16))
+    reported_by: Column = Column(String(64), ForeignKey("user.id"), nullable=False)
     assigned_to: Column = Column(String(64), ForeignKey("user.id"))
     reported_date: Column = Column(Integer, nullable=False)
     due_date: Column = Column(Integer)
@@ -72,15 +79,12 @@ class Issue(Base):
     classification: Column = Column(String(16))
     reproducible: Column = Column(String(16))
 
-    # relationship
-    project: Project = relationship("Project")
-    assigned_user: User = relationship("User")
-
     def __init__(
         self,
         title: str,
         project_id: str,
         description: str = None,
+        reported_by: str = None,
         assigned_to: str = None,
         due_date: int = None,
         severity: str = None,
@@ -92,8 +96,9 @@ class Issue(Base):
         self.title = title
         self.description = description
         self.project_id = project_id
+        self.reported_by = reported_by
         self.assigned_to = assigned_to
-        self.reported_date = int(time.time())
+        self.reported_date = int(time())
         self.due_date = due_date
         self.severity = severity
         self.flag = flag
