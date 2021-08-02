@@ -1,4 +1,7 @@
 # object
+"""
+Entity for storing the issue info
+"""
 type Issue {
   id: ID!
   projectId: ID!
